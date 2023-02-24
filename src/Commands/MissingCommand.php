@@ -24,10 +24,8 @@ class MissingCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Array of requested file in different languages.
@@ -118,7 +116,7 @@ class MissingCommand extends Command
         try {
             $missingKey = explode(':', $missingKey)[0];
 
-            list($file, $key) = explode('.', $missingKey);
+            [$file, $key] = explode('.', $missingKey);
 
             $filePath = $this->manager->files()[$file][config('app.locale')];
 
@@ -156,13 +154,11 @@ class MissingCommand extends Command
 
         $values = Arr::dot($filesResults);
 
-        $emptyValues = array_filter($values, function ($value) {
-            return $value == '';
-        });
+        $emptyValues = array_filter($values, fn($value) => $value == '');
 
         // Adding all keys that has values = ''
         foreach ($emptyValues as $dottedValue => $emptyValue) {
-            list($fileName, $languageKey, $key) = explode('.', $dottedValue, 3);
+            [$fileName, $languageKey, $key] = explode('.', $dottedValue, 3);
 
             $missing[] = "{$fileName}.{$key}:{$languageKey}";
         }

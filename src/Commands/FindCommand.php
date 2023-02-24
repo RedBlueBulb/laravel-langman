@@ -25,10 +25,8 @@ class FindCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Array of files grouped by filename.
@@ -93,7 +91,7 @@ class FindCommand extends Command
                 $lines = $filesContent[$fileName][$languageKey] = Arr::dot($this->manager->getFileContent($filePath));
 
                 foreach ($lines as $key => $line) {
-                    if (! is_array($line) && stripos($line, $this->argument('keyword')) !== false) {
+                    if (! is_array($line) && stripos($line, (string) $this->argument('keyword')) !== false) {
                         $output[$fileName.'.'.$key][$languageKey] = "<bg=yellow;fg=black>{$line}</>";
                     }
                 }
@@ -104,15 +102,13 @@ class FindCommand extends Command
         // in a close match, we collect the values for the rest of the
         // languages for the found keys to complete the table view.
         foreach ($output as $fullKey => $values) {
-            list($fileName, $key) = explode('.', $fullKey, 2);
+            [$fileName, $key] = explode('.', $fullKey, 2);
 
             $original = [];
 
             foreach ($allLanguages as $languageKey) {
                 $original[$languageKey] =
-                    isset($values[$languageKey])
-                        ? $values[$languageKey]
-                        : isset($filesContent[$fileName][$languageKey][$key]) ? $filesContent[$fileName][$languageKey][$key] : '';
+                    $values[$languageKey] ?? isset($filesContent[$fileName][$languageKey][$key]) ? $filesContent[$fileName][$languageKey][$key] : '';
             }
 
             // Sort the language values based on language name

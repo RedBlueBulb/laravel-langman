@@ -24,10 +24,8 @@ class SyncCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Command constructor.
@@ -140,9 +138,9 @@ class SyncCommand extends Command
         $missing = $this->manager->getKeysExistingInALanguageButNotTheOther($values);
 
         foreach ($missing as &$missingKey) {
-            list($file, $key) = explode('.', $missingKey, 2);
+            [$file, $key] = explode('.', $missingKey, 2);
 
-            list($key, $language) = explode(':', $key, 2);
+            [$key, $language] = explode(':', $key, 2);
 
             $this->fillMissingKeys($file, [$key], $language);
         }

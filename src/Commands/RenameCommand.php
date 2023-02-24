@@ -25,10 +25,8 @@ class RenameCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Array of files grouped by filename.
@@ -72,7 +70,7 @@ class RenameCommand extends Command
     private function renameKey()
     {
         try {
-            list($file, $key) = explode('.', $this->argument('oldKey'), 2);
+            [$file, $key] = explode('.', $this->argument('oldKey'), 2);
         } catch (\ErrorException $e) {
             $this->error('Could not recognize the key you want to rename.');
 
@@ -94,7 +92,7 @@ class RenameCommand extends Command
         foreach ($files as $languageKey => $filePath) {
             $content = Arr::dot($this->manager->getFileContent($filePath));
 
-            $currentValues[$languageKey] = isset($content[$key]) ? $content[$key] : '';
+            $currentValues[$languageKey] = $content[$key] ?? '';
         }
 
         $this->manager->removeKey($file, $key);
@@ -150,7 +148,7 @@ class RenameCommand extends Command
         $rows = [];
 
         foreach ($files as $file => $keys) {
-            $rows[] = [count($keys), $file];
+            $rows[] = [is_countable($keys) ? count($keys) : 0, $file];
         }
 
         return $rows;

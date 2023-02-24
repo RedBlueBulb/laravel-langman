@@ -24,10 +24,8 @@ class RemoveCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Array of requested file in different languages.
@@ -57,7 +55,7 @@ class RemoveCommand extends Command
     public function handle()
     {
         try {
-            list($file, $key) = explode('.', $this->argument('key'), 2);
+            [$file, $key] = explode('.', $this->argument('key'), 2);
         } catch (\ErrorException $e) {
             $this->error('Could not recognize the key you want to remove.');
 

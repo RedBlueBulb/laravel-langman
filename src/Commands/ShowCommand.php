@@ -26,10 +26,8 @@ class ShowCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Filename to read from.
@@ -166,7 +164,7 @@ class ShowCommand extends Command
 
         $this->file = $parts[0];
 
-        $this->key = isset($parts[1]) ? $parts[1] : null;
+        $this->key = $parts[1] ?? null;
 
         if (Str::contains($this->file, '::')) {
             try {

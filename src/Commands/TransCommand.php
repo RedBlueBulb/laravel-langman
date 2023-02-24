@@ -52,10 +52,8 @@ class TransCommand extends Command
 
     /**
      * The Languages manager instance.
-     *
-     * @var \Themsaid\LangMan\Manager
      */
-    private $manager;
+    private \Themsaid\LangMan\Manager $manager;
 
     /**
      * Array of requested file in different languages.
@@ -204,7 +202,7 @@ class TransCommand extends Command
                     $this->key,
                     $languageKey
                 ),
-                isset($languageContent[$this->key]) ? $languageContent[$this->key] : null
+                $languageContent[$this->key] ?? null
             );
         }
 
