@@ -47,28 +47,22 @@ class Manager
      */
     public function files()
     {
-        $files = Collection::make($this->disk->allFiles($this->path))->filter(fn($file) => $this->disk->extension($file) == 'php');
+		$dirs = Collection::make($this->disk->directories($this->path));
+		$files = $dirs->map(function($dir){
+			return Collection::make($this->disk->files($dir))->filter(fn($file) => $this->disk->extension($file) == 'php');
+		})->flatten();
 
         $filesByFile = $files->groupBy(function ($file) {
             $fileName = $file->getBasename('.'.$file->getExtension());
-
-            if (Str::contains($file->getPath(), 'vendor')) {
-                $fileName = str_replace('.php', '', $file->getFileName());
-
-                $packageName = basename(dirname($file->getPath()));
-
-                return "{$packageName}::{$fileName}";
-            } else {
-                return $fileName;
-            }
+            return $fileName;
         })->map(fn($files) => $files->keyBy(fn($file) => basename($file->getPath()))->map(fn($file) => $file->getRealPath()));
 
         // If the path does not contain "vendor" then we're looking at the
         // main language files of the application, in this case we will
         // neglect all vendor files.
-        if (! Str::contains($this->path, 'vendor')) {
+        //if (! Str::contains($this->path, 'vendor')) {
             $filesByFile = $this->neglectVendorFiles($filesByFile);
-        }
+        //}
 
         return $filesByFile;
     }
@@ -317,6 +311,17 @@ class Manager
         }
 
         return $allMatches;
+    }
+
+    /**
+     * Sets the path.
+     *
+     * @param string $path
+     * @return void
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
     }
 
     /**
